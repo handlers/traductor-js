@@ -23,12 +23,31 @@
   margin-bottom: .5em;
 }
 
+._traductor_outside_link {
+  clear: both;
+}
+
+._traductor_outside_link a {
+  color: #016CA2;
+}
+
+._traductor_outside_link a:hover {
+  color: black;
+}
+
 ._traductor_body {
   clear: both;
+  margin-bottom: .5em;
 }
 
 ._traductor_body li {
   list-style: none;
+}
+
+._traductor_translate {
+  text-decoration: underline;
+  color: #016CA2;
+  display: block;
 }
 
 ._traductor_clear {

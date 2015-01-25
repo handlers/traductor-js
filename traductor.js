@@ -1,3 +1,5 @@
+selected_text_cache = "";
+
 function getSelectedText() {
   var text = "";
   if (typeof window.getSelection != "undefined") {
@@ -8,13 +10,22 @@ function getSelectedText() {
   return text;
 }
 
+function setSelectedTextCache(text) {
+  selected_text_cache = text;
+  return selected_text_cache;
+}
+
+function getSelectedTextCache() {
+  return selected_text_cache;
+}
+
 function translateText(text) {
-  from_lang = "spa"
-  to_lang = "eng"
-  url = "http://developer.ultralingua.com/api/definitions/" + from_lang + "/" + to_lang + "/" + text
+  from_lang = "spa";
+  to_lang = "eng";
+  url = "http://developer.ultralingua.com/api/definitions/" + from_lang + "/" + to_lang + "/" + text;
   return $.getJSON(url).then(function(data){
     return data;
-  })
+  });
 }
 
 function makeTranslationContainer(text) {
@@ -22,17 +33,17 @@ function makeTranslationContainer(text) {
     '<div class="_traductor_quit_container"><span class="_traductor_quit">x</span></div>' +
     '<div class="_traductor_header">' + text + "</div>" +
     '<div class="_traductor_body">' +
-    '<button class="_traductor_translate">Get Definition</button>' +
-    '</div><div class="_traductor_clear"></div></div>'
-  return $(translation_container).prependTo("body")
+    '<span class="_traductor_translate">Get Definition</span>' +
+    '</div><div class="_traductor_clear"></div>' +
+    '<div class="_traductor_outside_link">' +
+    '<a href="#" target="_blank">Look up on wordreference</a>' +
+    '</div>' +
+    '</div>'
+  return $(translation_container).prependTo("body");
 }
 
-function positionTranslationContainer(x_coordinate, y_coordinate) {
-  $("._traductor").offset({ top: y_coordinate, left: x_coordinate })
-}
-
-function killTraductor() {
-  $("._traductor").remove();
+function positionTranslationContainer(x_coordinate, y_coordinate, y_offset) {
+  $("._traductor").offset({ top: y_coordinate + parseInt(y_offset), left: x_coordinate })
 }
 
 function buildTranslationMarkup(result) {
@@ -79,15 +90,29 @@ function traductorIsShowing() {
   return $('._traductor').length > 0
 }
 
+function killTraductor() {
+  $("._traductor").remove();
+}
+
+function addWordReferenceLink(text) {
+  url = "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
+  $("._traductor_outside_link a").attr("href", url);
+}
+
 $(document).on("mouseup", function(e){
-  text = getSelectedText(); 
+  text = getSelectedText();
   if (text && !traductorIsShowing()) {
+    setSelectedTextCache(text);
+    y_offset = $(e.target).css('line-height');
     translation_container = makeTranslationContainer(text);
-    positionTranslationContainer(e.pageX, e.pageY);
+    positionTranslationContainer(e.pageX, e.pageY, y_offset);
+    addWordReferenceLink(text);
   }
 });
 
 $(document).on('click', '._traductor_translate', function(e) {
+  text = getSelectedTextCache();
+  setSelectedTextCache("");
   translateText(text).done(function(result) {
     translation_markup = buildTranslationMarkup(result);
     $("._traductor_body").html(translation_markup);
