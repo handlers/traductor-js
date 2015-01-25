@@ -2,21 +2,24 @@
   position: absolute;
   z-index: 10000;
   background: white;
-  font-family: "Times New Roman", Georgia, Serif;
+  font-family: "Arial", sans-serif;
   color: black;
   border: 2px solid black;
-  width: 300px;
-  height: auto;
+  width: 40%;
   padding: .5em;
 }
 
-._traductor_quit {
+._traductor_quit_container {
   clear: both;
   text-align: right;
 }
 
 ._traductor_body {
   clear: both;
+}
+
+._traductor_body li {
+  list-style: none;
 }
 
 ._traductor_clear {

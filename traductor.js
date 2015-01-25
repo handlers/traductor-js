@@ -19,7 +19,7 @@ function translateText(text) {
 
 function makeTranslationContainer() {
   translation_container = '<div class="_traductor">' +
-    '<div class="_traductor_quit">x</div>' +
+    '<div class="_traductor_quit_container"><span class="_traductor_quit">x</span></div>' +
     '<div class="_traductor_body">' +
     '<button class="_traductor_translate">Get Definition</button>' +
     '</div><div class="_traductor_clear"></div></div>'
@@ -45,8 +45,10 @@ function buildTranslationMarkup(result) {
 function buildListItemMarkup(obj) {
   definition = parseDefinitionObject(obj)
   list_item_markup = '<li class="_traductor_definition">' +
-    '(' + definition.partofspeech + ') — ' +
-    definition.text + 
+    '<span class="_traductor_part_of_speech">' + 
+    definition.partofspeech + '</span>: ' +
+    '<span class="_traductor_definition">' + 
+    definition.text + '</span>' +
     '</li>'
   return list_item_markup 
 }
@@ -56,10 +58,6 @@ function parseDefinitionObject(obj) {
   definition.partofspeech = obj.partofspeech.partofspeechdisplay;
   definition.text = obj.text;
   return definition;
-}
-
-function displayTranslationContainer() {
-
 }
 
 function traductorIsShowing() {
@@ -78,10 +76,16 @@ $(document).on('click', '._traductor_translate', function(e) {
   translateText(text).done(function(result) {
     translation_markup = buildTranslationMarkup(result);
     $("._traductor_body").html(translation_markup);
+    //addQuitHandler();
   });
 })
 
 $(document).on('click', '._traductor_quit', function(e) {
-  killTraductor()
+  killTraductor();
 })
- 
+
+$(document).on('mousedown', 'body', function(e){
+  if ($(e.target).parents("._traductor").length < 1) {
+    killTraductor();
+  }
+});
