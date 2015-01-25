@@ -9,9 +9,18 @@
   padding: .5em;
 }
 
+._traductor_clarification {
+  font-style: italic;
+}
+
 ._traductor_quit_container {
   clear: both;
   text-align: right;
+}
+
+._traductor_header {
+  font-weight: bold;
+  margin-bottom: .5em;
 }
 
 ._traductor_body {
