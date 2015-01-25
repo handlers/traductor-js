@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Traductor",
+  "description": "Translate terms via the UltraLingua API",
+  "version": "0.1",
+
+  "permissions": [],
+  "browser_action": {
+    "default_icon": "icon-red.png",
+    "default_popup": "settings.html"
+  },
+  "background" : {
+    "page" : "background.js"
+  },
+  "content_scripts": [{
+      "js": ["jquery-1.11.1.min.js", "traductor.js"],
+      "css": ["style.css"],
+      "matches": [ "http://*/*", "https://*/*"]
+    }]
+}

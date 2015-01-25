@@ -1,0 +1,24 @@
+._traductor {
+  position: absolute;
+  z-index: 10000;
+  background: white;
+  font-family: "Times New Roman", Georgia, Serif;
+  color: black;
+  border: 2px solid black;
+  width: 300px;
+  height: auto;
+  padding: .5em;
+}
+
+._traductor_quit {
+  clear: both;
+  text-align: right;
+}
+
+._traductor_body {
+  clear: both;
+}
+
+._traductor_clear {
+  clear: both;
+}
