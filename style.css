@@ -2,15 +2,22 @@
   position: absolute;
   z-index: 10000;
   background: white;
-  font-family: "Arial", sans-serif;
+  font-family: "Georgia", serif;
   color: black;
   border: 2px solid black;
   width: 40%;
   padding: .5em;
+  font-size: 14px;
 }
 
 ._traductor_clarification {
   font-style: italic;
+}
+
+._traductor_quit {
+  position: absolute;
+  right: 3px;
+  top: 0px;
 }
 
 ._traductor_quit_container {
@@ -23,15 +30,13 @@
   margin-bottom: .5em;
 }
 
-._traductor_outside_link {
-  clear: both;
-}
-
-._traductor_outside_link a {
+._traductor_header a {
   color: #016CA2;
+  font-size: 11px;
+  font-weight: normal;
 }
 
-._traductor_outside_link a:hover {
+._traductor_header a:hover {
   color: black;
 }
 
@@ -45,11 +50,19 @@
 }
 
 ._traductor_translate {
-  text-decoration: underline;
   color: #016CA2;
   display: block;
+  text-decoration: underline;
+}
+
+._traductor_translate:hover {
+  cursor: pointer;
 }
 
 ._traductor_clear {
   clear: both;
+}
+
+._traductor_part_of_speech {
+  font-style: italic;
 }

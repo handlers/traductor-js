@@ -1,4 +1,5 @@
 selected_text_cache = "";
+definition_cache = {};
 
 function getSelectedText() {
   var text = "";
@@ -19,6 +20,10 @@ function getSelectedTextCache() {
   return selected_text_cache;
 }
 
+function hasSpaces() {
+  return /\w+\s\w/.test(text.trim());
+}
+
 function translateText(text) {
   from_lang = "spa";
   to_lang = "eng";
@@ -31,14 +36,14 @@ function translateText(text) {
 function makeTranslationContainer(text) {
   translation_container = '<div class="_traductor">' +
     '<div class="_traductor_quit_container"><span class="_traductor_quit">x</span></div>' +
-    '<div class="_traductor_header">' + text + "</div>" +
+    '<div class="_traductor_header">' + text +
+    '<a href="' + makeWordReferenceURL(text) +
+    '" target="_blank"> (WordReference def.)</a></div>' +
     '<div class="_traductor_body">' +
     '<span class="_traductor_translate">Get Definition</span>' +
     '</div><div class="_traductor_clear"></div>' +
     '<div class="_traductor_outside_link">' +
-    '<a href="#" target="_blank">Look up on wordreference</a>' +
-    '</div>' +
-    '</div>'
+    '</div></div>'
   return $(translation_container).prependTo("body");
 }
 
@@ -58,7 +63,7 @@ function buildListItemMarkup(obj) {
   definition = parseDefinitionObject(obj)
   list_item_markup = '<li class="_traductor_definition">' +
     '<span class="_traductor_part_of_speech">' + 
-    definition.partofspeech + '</span>: ' +
+    definition.partofspeech + '</span>. ' +
     buildClarificationsMarkup(definition.clarifications) +
     '<span class="_traductor_definition">' + 
     definition.text + '</span>' +
@@ -80,10 +85,23 @@ function buildClarificationsMarkup(clarifications) {
 
 function parseDefinitionObject(obj) {
   definition = {};
-  definition.partofspeech = obj.partofspeech.partofspeechdisplay;
+  definition.partofspeech = abbreviatePartOfSpeech(obj.partofspeech.partofspeechdisplay);
   definition.text = obj.text;
   definition.clarifications = obj.clarification
   return definition;
+}
+
+function abbreviatePartOfSpeech(partofspeech) {
+  lookup = {
+    pronoun: 'pron',
+    noun: 'n',
+    adjective: 'adj',
+    adverb: 'adv',
+    preposition: 'prep', 
+    verb: 'v',
+    expression: 'expr'
+  }
+  return lookup[partofspeech] === undefined ? partofspeech : lookup[partofspeech];
 }
 
 function traductorIsShowing() {
@@ -94,19 +112,18 @@ function killTraductor() {
   $("._traductor").remove();
 }
 
-function addWordReferenceLink(text) {
-  url = "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
-  $("._traductor_outside_link a").attr("href", url);
+function makeWordReferenceURL(text) {
+  return "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
 }
 
 $(document).on("mouseup", function(e){
   text = getSelectedText();
-  if (text && !traductorIsShowing()) {
+  //don't open popup if text has no spaces
+  if (text && !hasSpaces(text) && !traductorIsShowing()) {
     setSelectedTextCache(text);
     y_offset = $(e.target).css('line-height');
     translation_container = makeTranslationContainer(text);
     positionTranslationContainer(e.pageX, e.pageY, y_offset);
-    addWordReferenceLink(text);
   }
 });
 
@@ -125,6 +142,12 @@ $(document).on('click', '._traductor_quit', function(e) {
 
 $(document).on('mousedown', 'body', function(e){
   if ($(e.target).parents("._traductor").length < 1) {
+    killTraductor();
+  }
+});
+
+$(document).keyup(function(e) {
+  if (e.keyCode == 27) {
     killTraductor();
   }
 });
