@@ -38,9 +38,7 @@ function hasSpaces() {
 
 function translateText(text, source_lang, target_lang) {  
   url = "http://developer.ultralingua.com/api/definitions/" + source_lang + "/" + target_lang + "/" + text;
-  return $.getJSON(url).then(function(data){
-    return data;
-  });
+  return $.getJSON(url, function(data){return data;})
 }
 
 function makeTranslationContainer(text) {
@@ -53,7 +51,7 @@ function makeTranslationContainer(text) {
     '<span class="_traductor_translate">Get Definition</span>' +
     '</div><div class="_traductor_clear"></div>' +
     '<div class="_traductor_outside_link"></div>' +
-    '<div class="_traductor_ultralingua">Data by ' +
+    '<hr/><div class="_traductor_ultralingua">Data by ' +
     '<a href="http://www.Ultralingua.com">Ultralingua</a>' + 
     '</div></div>'
   return $(translation_container).prependTo("body");
@@ -128,9 +126,7 @@ function makeWordReferenceURL(text) {
   return "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
 }
 
-
 // bindings
-
 $(document).on("mouseup", function(e){
   text = getSelectedText();
   //don't open popup if text has no spaces
@@ -146,9 +142,12 @@ $(document).on('click', '._traductor_translate', function(e) {
   text = getSelectedTextCache();
   setSelectedTextCache("");
   translateText(text, source_language, target_language).done(function(result) {
-    translation_markup = buildTranslationMarkup(result);
-    $("._traductor_body").html(translation_markup);
-  });
+    markup = buildTranslationMarkup(result);
+    $("._traductor_body").html(markup);
+  }).fail(function(jqXHR) {
+    markup = "<span class='_traductor_error'>Error getting definition...</span>";
+    $("._traductor_body").html(markup);
+  });;
 })
 
 $(document).on('click', '._traductor_quit', function(e) {

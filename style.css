@@ -66,3 +66,7 @@
 ._traductor_part_of_speech {
   font-style: italic;
 }
+
+._traductor_error {
+  color: red;
+}
