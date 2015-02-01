@@ -1,5 +1,17 @@
-selected_text_cache = "";
-definition_cache = {};
+var selected_text_cache = "";
+var definition_cache = {};
+var source_language = "";
+var target_language = "";
+getSourceLanguage(function(r){source_language = r});
+getTargetLanguage(function(r){target_language = r});
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.command == "refreshSettings") {
+      getSourceLanguage(function(r){source_language = r});
+      getTargetLanguage(function(r){target_language = r});
+    }
+  });
 
 function getSelectedText() {
   var text = "";
@@ -24,10 +36,8 @@ function hasSpaces() {
   return /\w+\s\w/.test(text.trim());
 }
 
-function translateText(text) {
-  from_lang = "spa";
-  to_lang = "eng";
-  url = "http://developer.ultralingua.com/api/definitions/" + from_lang + "/" + to_lang + "/" + text;
+function translateText(text, source_lang, target_lang) {  
+  url = "http://developer.ultralingua.com/api/definitions/" + source_lang + "/" + target_lang + "/" + text;
   return $.getJSON(url).then(function(data){
     return data;
   });
@@ -42,7 +52,9 @@ function makeTranslationContainer(text) {
     '<div class="_traductor_body">' +
     '<span class="_traductor_translate">Get Definition</span>' +
     '</div><div class="_traductor_clear"></div>' +
-    '<div class="_traductor_outside_link">' +
+    '<div class="_traductor_outside_link"></div>' +
+    '<div class="_traductor_ultralingua">Data by ' +
+    '<a href="http://www.Ultralingua.com">Ultralingua</a>' + 
     '</div></div>'
   return $(translation_container).prependTo("body");
 }
@@ -116,6 +128,9 @@ function makeWordReferenceURL(text) {
   return "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
 }
 
+
+// bindings
+
 $(document).on("mouseup", function(e){
   text = getSelectedText();
   //don't open popup if text has no spaces
@@ -130,7 +145,7 @@ $(document).on("mouseup", function(e){
 $(document).on('click', '._traductor_translate', function(e) {
   text = getSelectedTextCache();
   setSelectedTextCache("");
-  translateText(text).done(function(result) {
+  translateText(text, source_language, target_language).done(function(result) {
     translation_markup = buildTranslationMarkup(result);
     $("._traductor_body").html(translation_markup);
   });
