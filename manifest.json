@@ -17,7 +17,7 @@
   "options_page": "options.html",
   "content_scripts": [{
       "js": ["jquery-1.11.1.min.js", "settings.js", "traductor.js"],
-      "css": ["style.css"],
+      "css": ["css/style.css"],
       "matches": [ "http://*/*", "https://*/*"]
     }]
 }
