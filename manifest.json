@@ -5,7 +5,7 @@
   "description": "Translate terms via the Ultralingua API",
   "version": "0.1",
 
-  "permissions": [],
+  "permissions": [{"fileSystem": ["write"]}],
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "settings.html"

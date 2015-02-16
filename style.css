@@ -70,3 +70,7 @@
 ._traductor_error {
   color: red;
 }
+
+._traductor_list_toggle {
+  display: none;
+}
