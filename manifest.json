@@ -11,7 +11,7 @@
     "default_popup": "settings.html"
   },
   "background" : {
-    "scripts" : ["jquery-1.11.1.min.js", "background.js", "options.js", "settings.js"],
+    "scripts" : ["js/react-with-addons.min.js", "js/JSXTransformer.js", "js/jquery-1.11.1.min.js", "js/background.js", "js/options.js", "js/settings.js"],
     "persistent" : false
   },
   "options_page": "options.html",
