@@ -5,7 +5,7 @@
   "description": "Translate terms via the Ultralingua API",
   "version": "0.1",
 
-  "permissions": [{"fileSystem": ["write"]}],
+  "permissions": [],
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "settings.html"
@@ -16,8 +16,8 @@
   },
   "options_page": "options.html",
   "content_scripts": [{
-      "js": ["js/jquery-1.11.1.min.js", "js/settings.js", "js/traductor.js"],
-      "css": ["style.css"],
+      "js": ["js/underscore-min.js", "js/jquery-1.11.1.min.js", "js/settings.js", "js/traductor.js"],
+      "css": ["css/style.css"],
       "matches": [ "http://*/*", "https://*/*"]
     }]
 }
