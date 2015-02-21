@@ -11,12 +11,12 @@
     "default_popup": "settings.html"
   },
   "background" : {
-    "scripts" : ["jquery-1.11.1.min.js", "background.js", "options.js", "settings.js"],
+    "scripts" : ["js/jquery-1.11.1.min.js", "js/background.js", "js/options.js", "js/settings.js"],
     "persistent" : false
   },
   "options_page": "options.html",
   "content_scripts": [{
-      "js": ["jquery-1.11.1.min.js", "settings.js", "traductor.js"],
+      "js": ["js/jquery-1.11.1.min.js", "js/settings.js", "js/traductor.js"],
       "css": ["style.css"],
       "matches": [ "http://*/*", "https://*/*"]
     }]
