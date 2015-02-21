@@ -1,8 +1,8 @@
-define(['lib/underscore', 'jquery', 'text!templates/definition.html'], function(x,y,definition_templ) {
+define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definition.html'], function(x,y,z,definition_templ) {
   var selected_text_cache = "";
   var definition_cache = {};
-  var source_language = "";
-  var target_language = "";
+  var source_language = "es";
+  var target_language = "en";
   var parts_of_speech_map = {
     pronoun: 'pron',
     noun: 'n',
@@ -23,7 +23,6 @@ define(['lib/underscore', 'jquery', 'text!templates/definition.html'], function(
 
   //getSourceLanguage(function(r){source_language = r});
   //getTargetLanguage(function(r){target_language = r});
-
 
   function getSelectedText() {
     var text = "";
@@ -54,7 +53,7 @@ define(['lib/underscore', 'jquery', 'text!templates/definition.html'], function(
   }
 
   function makeTranslationContainer(text) {
-    temp = _.template(definition_templ)
+    temp = _.template(definition_templ);
     markup = temp({term: text, wr_url: makeWordReferenceURL(text), list_toggle: "Add to vocabulary list", outside_link: "No link"})
     return $(markup).prependTo("body");
   }
