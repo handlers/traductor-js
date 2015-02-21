@@ -1,3 +1,119 @@
+/*********
+Message Passing
+*********/
+
+var Events = (function() {
+  var _map = {};
+ 
+  return {
+    subscribe: function(name, cb) {
+      _map[name] || (_map[name] = []);
+      _map[name].push(cb);
+    },
+ 
+    notify: function(name, data) {
+      if (!_map[name]) {
+        return;
+      }
+ 
+      // if you want canceling or anything else, add it in to this cb loop
+      _map[name].forEach(function(cb) {
+        cb(data);
+      });
+    }
+  }
+})();
+
+/*********
+React zone
+*********/
+
+$(document).ready(function() {
+  $("body").prepend('<div class="_traductor_app"></div>')
+});
+
+var App = React.createClass({
+  getInitialState: function() {
+    return {terms: ["watttt"]}
+  },
+  render: function() {
+    return (
+      <div className="_tr_container">
+        <VocabList terms={this.state.terms} />
+      </div>
+    );
+  },
+  componentDidMount: function() {
+    Events.subscribe('addVocab', function(data) {
+      //this.setState({terms: ['yolo', 'cowboy']})
+      //this.setState({terms: 'wat'})
+    });
+  }
+});
+
+var VocabList = React.createClass({
+  render: function() {
+    return (
+      <div className="_traductor_vocab">
+        {this.props.terms}
+      </div>
+    );
+  }
+});
+
+var Translator = React.createClass({
+  render: function() {
+    return (
+      <div className="_tr_translator">
+        <div className="_traductor_quit_container">
+          <span className="_traductor_quit">x</span>
+        </div>
+        <div className="_traductor_header">
+          <span className="_traductor_term">
+            {this.props.term}
+          </span>
+          <a href="http://www.wordreference.com/es/en/translation.asp?spen=opulares" target="_blank">
+            (WordReference def.)
+          </a>
+        </div>
+        <div className="_traductor_body">
+          <span className="_traductor_translate">
+            Get Definition
+          </span>
+        </div>
+        <div className="_traductor_clear">
+        </div>
+        <button className="_traductor_list_toggle">
+          Add to list
+        </button>
+        <a className="_traductor_export">
+          Export
+        </a>
+        <div className="_traductor_clear">
+        </div>
+        <div className="_traductor_outside_link">
+        </div>
+        <hr></hr>
+        <div className="_traductor_ultralingua">
+          Data by 
+          <a href="http://www.Ultralingua.com">
+            Ultralingua
+          </a>
+        </div>
+      </div>
+    )
+  }
+});
+
+React.render(
+  <App />,
+  $("._traductor_app")[0]
+);
+
+/*********
+Olde
+*********/
+
 var selected_text_cache = "";
 var definition_cache = {};
 var source_language = "";
@@ -12,13 +128,13 @@ var parts_of_speech_map = {
   expression: 'expr'
 }
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.command == "refreshSettings") {
-      getSourceLanguage(function(r){source_language = r});
-      getTargetLanguage(function(r){target_language = r});
-    }
-  });
+//chrome.runtime.onMessage.addListener(
+//  function(request, sender, sendResponse) {
+//    if (request.command == "refreshSettings") {
+//      getSourceLanguage(function(r){source_language = r});
+//      getTargetLanguage(function(r){target_language = r});
+//    }
+//  });
 
 getSourceLanguage(function(r){source_language = r});
 getTargetLanguage(function(r){target_language = r});

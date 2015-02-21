@@ -1,5 +1,20 @@
-._traductor {
+._traductor_app {
   position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10000;
+  background: white;
+  font-family: "Georgia", serif;
+  color: black;
+  border: 2px solid black;
+  padding: .5em;
+  font-size: 14px;
+}
+
+._tr_translator {
+  position: absolute;
+  left: 0px;
+  top: 0px;
   z-index: 10000;
   background: white;
   font-family: "Georgia", serif;
