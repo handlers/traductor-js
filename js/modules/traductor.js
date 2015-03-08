@@ -72,11 +72,22 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
   function buildTranslationMarkup(result) {
     result_for_display = result.map(function(r) {
       return parseDefinitionObject(r)
-    })
+    });
     rendered_template = _.template(templates.translation)({
       definitions: result_for_display
     });
     return rendered_template;
+  }
+
+  function buildVocabListMarkup(words) {
+    list_markup = "";
+    $.each(words, function(word, definitions) {
+      list_markup += _.template(templates.vocab_list_item)({
+        word: word,
+        definitions_markup: buildTranslationMarkup(definitions)
+      });
+    });
+    return list_markup
   }
 
   function parseDefinitionObject(obj) {
@@ -207,8 +218,7 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     setSelectedTextCache("");
     translateText(text, source_language, target_language).done(function(result) {
       markup = buildTranslationMarkup(result);
-      definition_cache[text] = result;
-      console.log(definition_cache)     
+      definition_cache[text] = result;     
       $("._traductor_body").html(markup);
       $("._traductor_list_toggle").show();
     }).fail(function(jqXHR) {
