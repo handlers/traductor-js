@@ -56,7 +56,7 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     rendered_template = _.template(templates.definition)({
       term: text,
       wr_url: makeWordReferenceURL(text),
-      list_toggle: "Add to vocabulary list",
+      list_toggle: "Add to list",
       outside_link: "No link"
     })
     return $(rendered_template).prependTo("body");
@@ -90,6 +90,14 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     return list_markup
   }
 
+  function renderVocabList(words) {
+    $("._traductor_vocab_list").html(
+      _.template(templates.vocab_list)({
+        words_markup: buildVocabListMarkup(words)
+      })
+    );
+  }
+
   function parseDefinitionObject(obj) {
     definition = {};
     definition.partofspeech = abbreviatePartOfSpeech(
@@ -116,10 +124,10 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     return "http://www.wordreference.com/es/en/translation.asp?spen=" + text;
   }
 
-  function toggleItemExport(text) {
-    text = $.trim(text)
-    toggleItemExportAttribute(text);
-    toggleExportButtonText(text);
+  function toggleItemExport(word) {
+    toggleItemExportAttribute(word);
+    toggleExportButtonText(word);
+    renderVocabList(getExportableVocab());
   }
 
   function toggleItemExportAttribute(text) {
@@ -130,9 +138,10 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     }
   }
 
-  function toggleExportButtonText() {
-    button = $("._traductor_list_toggle");
-    if (button.text() === "Add to list") {
+  function toggleExportButtonText(word) {
+    button = $('*[data-word="' + word + '"]');
+    text = $.trim(button.text())
+    if (text === "Add to list") {
       button.text("Remove from list");
     } else {
       button.text("Add to list");
@@ -212,6 +221,11 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
     }
   });
 
+  // Create nav
+  $(document).ready(function() {
+    $("body").append(_.template(templates.vocab_list)({words_markup:""}))
+  });
+
   // Translation
   $(document).on('click', '._traductor_translate', function(e) {
     text = getSelectedTextCache();
@@ -220,6 +234,7 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
       markup = buildTranslationMarkup(result);
       definition_cache[text] = result;     
       $("._traductor_body").html(markup);
+      $("._traductor_list_toggle").attr("data-word", text)
       $("._traductor_list_toggle").show();
     }).fail(function(jqXHR) {
       markup = "<span class='_traductor_error'>Error getting definition...</span>";
@@ -229,7 +244,7 @@ define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], fu
 
   // exporting
   $(document).on('click', '._traductor_list_toggle', function(e) {
-    toggleItemExport($("._traductor_term").text())
+    toggleItemExport($("._traductor_list_toggle").attr("data-word"))
   })
 
   $(document).on('click', '._traductor_export', function(e){
