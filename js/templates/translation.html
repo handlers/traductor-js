@@ -1,0 +1,17 @@
+<% _.each(definitions, function(definition){ %>
+  <li class="_traductor_definition"> 
+    <span class="_traductor_part_of_speech">
+      <%= definition.partofspeech %>.
+    </span>
+    <span class="_traductor_clarifications">
+      <% _.each(definition.clarifications, function(c) { %>
+        <span class="_traductor_clarification">
+          [<%= c %>]
+        </span>
+      <% }); %>
+    </span> 
+    <span class="_traductor_definition">  
+      <%= definition.text %>
+    </span> 
+  </li>
+<% }); %>

@@ -1,4 +1,4 @@
-define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definition.html'], function(x,y,z,definition_templ) {
+define(['modules/settings', 'modules/templates', 'lib/underscore', 'jquery'], function(w,templates) {
   var selected_text_cache = "";
   var definition_cache = {};
   var source_language = "es";
@@ -44,7 +44,7 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
   }
 
   function hasSpaces() {
-    return /\w+\s\w/.test(text.trim());
+    return /\w+\s\w/.test($.trim(text));
   }
 
   function translateText(text, source_lang, target_lang) {  
@@ -53,50 +53,37 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
   }
 
   function makeTranslationContainer(text) {
-    temp = _.template(definition_templ);
-    markup = temp({term: text, wr_url: makeWordReferenceURL(text), list_toggle: "Add to vocabulary list", outside_link: "No link"})
-    return $(markup).prependTo("body");
+    rendered_template = _.template(templates.definition)({
+      term: text,
+      wr_url: makeWordReferenceURL(text),
+      list_toggle: "Add to vocabulary list",
+      outside_link: "No link"
+    })
+    return $(rendered_template).prependTo("body");
   }
 
   function positionTranslationContainer(x_coordinate, y_coordinate, y_offset) {
-    $("._traductor").offset({ top: y_coordinate + parseInt(y_offset), left: x_coordinate })
+    $("._traductor").offset({ 
+      top: y_coordinate + parseInt(y_offset),
+      left: x_coordinate
+    })
   }
 
   function buildTranslationMarkup(result) {
-    translation_markup = "<ul>"
-    $.each(result, function(i, obj) {
-      translation_markup += buildListItemMarkup(obj)
+    result_for_display = result.map(function(r) {
+      return parseDefinitionObject(r)
+    })
+    rendered_template = _.template(templates.translation)({
+      definitions: result_for_display
     });
-    return translation_markup += "</ul>"
-  }
-
-  function buildListItemMarkup(obj) {
-    definition = parseDefinitionObject(obj)
-    list_item_markup = '<li class="_traductor_definition">' +
-      '<span class="_traductor_part_of_speech">' + 
-      definition.partofspeech + '</span>. ' +
-      buildClarificationsMarkup(definition.clarifications) +
-      '<span class="_traductor_definition">' + 
-      definition.text + '</span>' +
-      '</li>'
-    return list_item_markup;
-  }
-
-  function buildClarificationsMarkup(clarifications) {
-    clarifications_markup = ""
-    if (clarifications !== undefined) {
-      $.each(clarifications, function(i, c) {
-        clarifications_markup += '<span class="_traductor_clarification">('
-        clarifications_markup += clarifications[i]
-        clarifications_markup +=')</span> '
-      });
-    }
-    return clarifications_markup;
+    return rendered_template;
   }
 
   function parseDefinitionObject(obj) {
     definition = {};
-    definition.partofspeech = abbreviatePartOfSpeech(obj.partofspeech.partofspeechdisplay);
+    definition.partofspeech = abbreviatePartOfSpeech(
+      obj.partofspeech.partofspeechdisplay
+    );
     definition.text = obj.text;
     definition.clarifications = obj.clarification
     return definition;
@@ -119,6 +106,7 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
   }
 
   function toggleItemExport(text) {
+    text = $.trim(text)
     toggleItemExportAttribute(text);
     toggleExportButtonText(text);
   }
@@ -169,15 +157,16 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
     return r;
   }
 
+  // This is ugly but trying to use a template is, in fact, uglier
   function formatVocabAsCSV(definitions, include_header) {
     include_header = typeof include_header !== 'undefined' ? include_header : false;
     output = include_header ? "word, definition\n" : "" 
-    $.each(definitions, function(index, value) {
-      output += "\"" + index + "\",\""
-      definitions_count = value.length
-      $.each(value, function(i, v) {
+    $.each(definitions, function(word, definitions) {
+      output += "\"" + word + "\",\""
+      definitions_count = definitions.length
+      $.each(definitions, function(i, definition) {
         include_newline = definitions_count === i + 1 ? false : true 
-        buildDefinitionText(parseDefinitionObject(v), include_newline);
+        buildDefinitionText(parseDefinitionObject(definition), include_newline);
       })
       output += "\"\n";
     });
@@ -204,7 +193,6 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
   // Opening popup
   $(document).on("mouseup", function(e){
     text = getSelectedText();
-    //don't open popup if text has no spaces
     if (text && !hasSpaces(text) && !traductorIsShowing()) {
       setSelectedTextCache(text);
       y_offset = $(e.target).css('line-height');
@@ -220,6 +208,7 @@ define(['modules/settings', 'lib/underscore', 'jquery', 'text!templates/definiti
     translateText(text, source_language, target_language).done(function(result) {
       markup = buildTranslationMarkup(result);
       definition_cache[text] = result;
+      console.log(definition_cache)     
       $("._traductor_body").html(markup);
       $("._traductor_list_toggle").show();
     }).fail(function(jqXHR) {

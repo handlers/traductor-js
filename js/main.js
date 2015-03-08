@@ -4,6 +4,4 @@ require.config({
   }
 });
 
-require(['modules/traductor'], function(traductor) {
-  console.log(traductor)
-});
+require(['modules/traductor'], function(traductor) {});
