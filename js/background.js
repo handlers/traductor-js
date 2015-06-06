@@ -2,19 +2,19 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.command == "getSourceLanguage") {
       sendResponse({
-        sourceLanguage: localStorage.getItem("_traductor_source_language")
+        sourceLanguage: localStorage.getItem("_tr_source_language")
       });
     }
     else if (request.command == "getTargetLanguage") {
       sendResponse({
-        targetLanguage: localStorage.getItem("_traductor_target_language")
+        targetLanguage: localStorage.getItem("_tr_target_language")
       });  
     }
     else if (request.command == "setLanguage") {
       localStorage.setItem(request.params.key, request.params.val);
       sendResponse({
-        source_language: localStorage.getItem("_traductor_source_language"),
-        target_language: localStorage.getItem("_traductor_target_language")
+        source_language: localStorage.getItem("_tr_source_language"),
+        target_language: localStorage.getItem("_tr_target_language")
       });
       getTabIDs(sendRefreshSignal);
     }

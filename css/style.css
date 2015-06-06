@@ -1,4 +1,4 @@
-._traductor {
+._tr {
   position: absolute;
   z-index: 10000;
   background: white;
@@ -10,67 +10,71 @@
   font-size: 14px;
 }
 
-._traductor_clarification {
+._tr_clarification {
   font-style: italic;
 }
 
-._traductor_quit {
+._tr_quit {
   position: absolute;
   right: 3px;
   top: 0px;
 }
 
-._traductor_quit_container {
+._tr_quit_container {
   clear: both;
   text-align: right;
 }
 
-._traductor_header {
+._tr_header {
   font-weight: bold;
   margin-bottom: .5em;
 }
 
-._traductor_header a {
+._tr_header a {
   color: #016CA2;
   font-size: 11px;
   font-weight: normal;
 }
 
-._traductor_header a:hover {
+._tr_header a:hover {
   color: black;
 }
 
-._traductor_body {
+._tr_body {
   clear: both;
   margin-bottom: .5em;
 }
 
-._traductor_body li {
+._tr_body li {
   list-style: none;
 }
 
-._traductor_translate {
+._tr_translate {
   color: #016CA2;
   display: block;
   text-decoration: underline;
 }
 
-._traductor_translate:hover {
+._tr_translate:hover {
   cursor: pointer;
 }
 
-._traductor_clear {
+._tr_clear {
   clear: both;
 }
 
-._traductor_part_of_speech {
+._tr_part_of_speech {
   font-style: italic;
 }
 
-._traductor_error {
+._tr_error {
   color: red;
 }
 
-._traductor_list_toggle {
+._tr_list_toggle {
   display: none;
+}
+
+._tr_vocab_list_word ._tr_list_toggle {
+  display: inline;
 }
